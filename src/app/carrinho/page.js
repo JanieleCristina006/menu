@@ -109,6 +109,7 @@ const Carrinhopage = () => {
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             cartItems={itensCarrinho}
+            total={total}
           />
         </>
       )}

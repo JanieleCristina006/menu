@@ -105,7 +105,7 @@ export const TabMenu = () => {
 
   return (
     <div className="w-full pt-4 pb-24 mb-5">
-      {/* Menu de tabs */}
+     
       <nav className="w-full py-3">
         <ul className="flex gap-3 overflow-x-auto px-2 no-scrollbar">
           {tabs.map((tab, idx) => {
@@ -135,7 +135,7 @@ export const TabMenu = () => {
         </ul>
       </nav>
 
-      {/* Lista de produtos */}
+     
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {itensFiltrados.length > 0 ? (
           itensFiltrados.map((item) => (

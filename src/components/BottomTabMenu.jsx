@@ -10,7 +10,7 @@ const bottomTabs = [
   { label: "Home", icon: Home, path: "/" },
   // { label: "Pedidos", icon: Package, path: "/pedidos" },
   { label: "Carrinho", icon: null, path: "/carrinho" }, 
-  { label: "Perfil", icon: User, path: "/perfil" },
+  // { label: "Perfil", icon: User, path: "/perfil" },
 ];
 
 export const BottomTabMenu = () => {
