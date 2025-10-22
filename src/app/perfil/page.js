@@ -10,9 +10,9 @@ const COLORS = {
 };
 
 const TABS = [
-  { key: "dados", label: "Meus Dados" },
+  { key: "dados", label: " Dados" },
   { key: "enderecos", label: "Endereços" },
-  { key: "senha", label: "Trocar Senha" },
+  { key: "senha", label: " Senha" },
   { key: "cartoes", label: "Cartões" },
 ];
 
@@ -63,7 +63,7 @@ const PerfilPage = () => {
         ))}
       </div>
 
-      {/* Conteúdo */}
+  
       <div className="bg-white rounded-xl shadow p-6 w-full max-w-md mb-24">
         {activeTab === "dados" && (
           <form className="flex flex-col gap-4">

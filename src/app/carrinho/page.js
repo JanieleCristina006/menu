@@ -22,7 +22,7 @@ const Carrinhopage = () => {
 
   return (
     <div className="max-w-md mx-auto p-4 min-h-screen flex flex-col bg-[#fff7f0] rounded-lg">
-      <h1 className="text-2xl font-bold mb-6">Seu Carrinho({quantidadeTotal})</h1>
+      <h1 className=" text-2xl font-semibold mb-5 text-[#795548] drop-shadow-sm">Seu Carrinho({quantidadeTotal})</h1>
 
       {itensCarrinho.length === 0 ? (
         <p className="text-gray-500">Seu carrinho está vazio.</p>

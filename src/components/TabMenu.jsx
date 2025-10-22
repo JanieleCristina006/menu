@@ -111,7 +111,7 @@ export const TabMenu = () => {
           {tabs.map((tab, idx) => {
             const Icone = tab.icon;
             return (
-              <li key={tab.label} className="flex-shrink-0">
+              <li key={tab.label} className="">
                 <button
                   className={`flex items-center gap-2 px-5 py-2 rounded-full transition font-medium text-base border-2 cursor-pointer shadow`}
                   style={{

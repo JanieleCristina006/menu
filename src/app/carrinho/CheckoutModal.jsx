@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 
 export default function CheckoutModal({ isOpen, onClose, cartItems }) {
   const [nome, setNome] = useState("");
@@ -32,6 +33,34 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
     }
   }, [cupom]);
 
+  // -----------------------------
+  // Autocomplete de Rua
+  // -----------------------------
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions,
+  } = usePlacesAutocomplete({
+    requestOptions: { /* restrição de país opcional */ },
+    debounce: 300,
+  });
+
+  const handleSelect = async (description) => {
+    setValue(description, false);
+    clearSuggestions();
+    setRua(description);
+
+    try {
+      const results = await getGeocode({ address: description });
+      const { lat, lng } = await getLatLng(results[0]);
+      console.log("Endereço selecionado:", description, lat, lng);
+    } catch (error) {
+      console.log("Erro ao obter coordenadas:", error);
+    }
+  };
+
   if (!isOpen) return null;
 
   const isFinalizarDisabled =
@@ -40,7 +69,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center  p-4 overflow-auto"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 overflow-auto"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -49,6 +78,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
         className="bg-white rounded-xl w-full max-w-xl p-6 max-h-[90vh] shadow-lg relative overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Botão Fechar */}
         <button
           onClick={onClose}
           aria-label="Fechar modal"
@@ -57,6 +87,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
           &times;
         </button>
 
+        {/* Título */}
         <h2 className="text-xl font-bold text-pink-700 mb-4 text-center">Finalizar Pedido</h2>
 
         {/* Nome */}
@@ -71,19 +102,36 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
           />
         </div>
 
-       
+        {/* Endereço */}
         {entrega === "entrega" && (
           <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
+            {/* Rua com autocomplete */}
+            <div className="relative">
               <label className="block font-semibold mb-1">Rua:</label>
               <input
                 type="text"
                 className="w-full border rounded px-3 py-2 focus:outline-pink-400 focus:ring-2 focus:ring-pink-300"
-                value={rua}
-                onChange={(e) => setRua(e.target.value)}
-                placeholder="Rua"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                placeholder="Digite a rua"
+                disabled={!ready}
               />
+              {status === "OK" && (
+                <ul className="absolute z-50 bg-white border rounded mt-1 w-full max-h-40 overflow-auto shadow-md">
+                  {data.map(({ description }, index) => (
+                    <li
+                      key={index}
+                      onClick={() => handleSelect(description)}
+                      className="p-2 hover:bg-pink-100 cursor-pointer text-sm"
+                    >
+                      {description}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
+
+            {/* Número */}
             <div>
               <label className="block font-semibold mb-1">Número:</label>
               <input
@@ -94,6 +142,8 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
                 placeholder="Número"
               />
             </div>
+
+            {/* Bairro */}
             <div>
               <label className="block font-semibold mb-1">Bairro:</label>
               <input
@@ -107,7 +157,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
           </div>
         )}
 
-       
+        {/* Entrega ou Retirada */}
         <div className="mb-4">
           <span className="block font-semibold mb-1">Retirada / Entrega:</span>
           <div className="flex gap-6">
@@ -136,7 +186,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
           </div>
         </div>
 
-      
+        {/* Pagamento */}
         <div className="mb-4">
           <label className="block font-semibold mb-1">Forma de Pagamento:</label>
           <select
@@ -164,7 +214,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
           </div>
         )}
 
-      
+        {/* Observação */}
         <div className="mb-4">
           <label className="block font-semibold mb-1">Observação:</label>
           <textarea
@@ -176,7 +226,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
           />
         </div>
 
-    
+        {/* Cupom */}
         <div className="mb-4">
           <label className="block font-semibold mb-1">Cupom de Desconto:</label>
           <input
@@ -193,6 +243,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
           {!isCupomValido && <p className="text-red-500 text-sm mt-1">Cupom inválido.</p>}
         </div>
 
+        {/* Resumo do pedido */}
         <div className="border-t pt-4 mt-4 space-y-2">
           <div className="flex justify-between text-gray-700">
             <span>Subtotal:</span>
@@ -213,26 +264,25 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
         </div>
 
         {/* Botões */}
-<div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
-  <button
-    onClick={onClose}
-    className="w-full sm:w-auto px-6 py-2 rounded-full border border-pink-400 text-pink-600 font-semibold bg-white hover:bg-pink-50 transition"
-  >
-    Continuar Comprando
-  </button>
-  <button
-    onClick={() => alert('Pedido finalizado!')}
-    disabled={isFinalizarDisabled}
-    className={`w-full sm:w-auto px-6 py-2 rounded-full font-semibold transition text-white ${
-      isFinalizarDisabled
-        ? 'bg-pink-300 cursor-not-allowed'
-        : 'bg-pink-500 hover:bg-pink-600'
-    }`}
-  >
-    Finalizar Pedido
-  </button>
-</div>
-
+        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <button
+            onClick={onClose}
+            className="w-full sm:w-auto px-6 py-2 rounded-full border border-pink-400 text-pink-600 font-semibold bg-white hover:bg-pink-50 transition"
+          >
+            Continuar Comprando
+          </button>
+          <button
+            onClick={() => alert("Pedido finalizado!")}
+            disabled={isFinalizarDisabled}
+            className={`w-full sm:w-auto px-6 py-2 rounded-full font-semibold transition text-white ${
+              isFinalizarDisabled
+                ? "bg-pink-300 cursor-not-allowed"
+                : "bg-pink-500 hover:bg-pink-600"
+            }`}
+          >
+            Finalizar Pedido
+          </button>
+        </div>
       </div>
     </div>
   );
