@@ -34,14 +34,13 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
 
   if (!isOpen) return null;
 
-  // Desabilitar finalizar se campos obrigatórios estiverem vazios
   const isFinalizarDisabled =
     nome.trim() === "" ||
     (entrega === "entrega" && (rua.trim() === "" || numero.trim() === "" || bairro.trim() === ""));
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4 overflow-auto"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center  p-4 overflow-auto"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -72,7 +71,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
           />
         </div>
 
-        {/* Endereço separado */}
+       
         {entrega === "entrega" && (
           <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
@@ -108,7 +107,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems }) {
           </div>
         )}
 
-        {/* Entrega ou Retirada */}
+       
         <div className="mb-4">
           <span className="block font-semibold mb-1">Retirada / Entrega:</span>
           <div className="flex gap-6">

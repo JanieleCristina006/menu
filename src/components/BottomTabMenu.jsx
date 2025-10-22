@@ -2,18 +2,22 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Home, ShoppingCart, Package, User } from "lucide-react";
+import { Home, Package, User } from "lucide-react"; 
+import { CartIcon } from "./CartIcon"; 
+import { useCarrinho } from "@/context/CartContext";
 
 const bottomTabs = [
   { label: "Home", icon: Home, path: "/" },
   { label: "Pedidos", icon: Package, path: "/pedidos" },
-  { label: "Carrinho", icon: ShoppingCart, path: "/carrinho" },
+  { label: "Carrinho", icon: null, path: "/carrinho" }, 
   { label: "Perfil", icon: User, path: "/perfil" },
 ];
 
-export const BottomTabMenu = ({ cartCount = 0 }) => {
+export const BottomTabMenu = () => {
   const [activeTab, setActiveTab] = useState(0);
   const router = useRouter();
+
+  const { totalItens } = useCarrinho(); 
 
   const handleTabClick = (idx, path) => {
     setActiveTab(idx);
@@ -24,7 +28,6 @@ export const BottomTabMenu = ({ cartCount = 0 }) => {
     <nav className="fixed bottom-0 left-0 w-full bg-pink-100 shadow-lg border-t border-pink-300 z-50">
       <ul className="flex justify-around items-center py-3">
         {bottomTabs.map((tab, idx) => {
-          const IconComponent = tab.icon;
           const isActive = activeTab === idx;
 
           return (
@@ -35,21 +38,18 @@ export const BottomTabMenu = ({ cartCount = 0 }) => {
                   isActive
                     ? "bg-pink-200 text-pink-600 shadow-md"
                     : "text-brown-500 hover:bg-pink-50"
-                }`}
+                } overflow-visible`}
               >
-                <IconComponent
-                  size={26}
-                  className={isActive ? "text-pink-600" : "text-brown-400"}
-                />
+                {tab.label === "Carrinho" ? (
+                  <CartIcon count={totalItens} isActive={isActive} />
+                ) : (
+                  <tab.icon
+                    size={26}
+                    className={isActive ? "text-pink-600" : "text-brown-400"}
+                  />
+                )}
                 <span className="mt-1 text-xs font-semibold">{tab.label}</span>
               </button>
-
-              {/* Badge para carrinho */}
-              {tab.label === "Carrinho" && cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-pink-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">
-                  {cartCount}
-                </span>
-              )}
             </li>
           );
         })}

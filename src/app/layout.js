@@ -3,6 +3,7 @@ import "./globals.css";
 import { BottomTabMenu } from "@/components/BottomTabMenu";
 import { CarrinhoProvider } from "@/context/CartContext";
 import { ToastProvider } from "@/components/ToastProvider";
+import { BottomTabMenuWrapper } from "@/components/BottomTabMenuWrapper";
 
 
 const geistSans = Geist({
@@ -29,6 +30,8 @@ export default function RootLayout({ children }) {
         <CarrinhoProvider>
         <ToastProvider />
                {children}
+
+               <BottomTabMenuWrapper />
 
         <BottomTabMenu  />
         </CarrinhoProvider>

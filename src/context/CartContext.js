@@ -1,18 +1,17 @@
 "use client";
 
-import { createContext, useState } from "react";
+import React, { createContext, useState, useContext } from "react";
 import toast from "react-hot-toast";
 
 export const CarrinhoContexto = createContext();
+
 
 export const CarrinhoProvider = ({ children }) => {
   const [itensCarrinho, setItensCarrinho] = useState([]);
 
   const adicionarProduto = (produto) => {
-    // Verifica se já existe no carrinho
     const existe = itensCarrinho.find((item) => item.id === produto.id);
 
-    // Atualiza o estado
     setItensCarrinho((prev) => {
       if (existe) {
         return prev.map((item) =>
@@ -24,18 +23,17 @@ export const CarrinhoProvider = ({ children }) => {
       return [...prev, produto];
     });
 
-    // Dispara o toast fora do setState
-    if (existe) {
-      toast.success("Quantidade atualizada no carrinho!");
-    } else {
-      toast.success("Produto adicionado ao carrinho!");
-    }
+    toast.success(
+      existe ? "Quantidade atualizada no carrinho!" : "Produto adicionado ao carrinho!"
+    );
   };
+
 
   const removerProduto = (id) => {
     setItensCarrinho((prev) => prev.filter((item) => item.id !== id));
     toast("Produto removido do carrinho.");
   };
+
 
   const alterarQuantidade = (id, delta) => {
     setItensCarrinho((prev) =>
@@ -49,12 +47,17 @@ export const CarrinhoProvider = ({ children }) => {
     );
   };
 
+  
   const limparCarrinho = () => {
     setItensCarrinho([]);
     toast("Carrinho limpo!");
   };
 
-  console.log("Renderizou CarrinhoProvider");
+ 
+  const totalItens = itensCarrinho.reduce(
+    (acc, item) => acc + item.quantidade,
+    0
+  );
 
   return (
     <CarrinhoContexto.Provider
@@ -64,9 +67,19 @@ export const CarrinhoProvider = ({ children }) => {
         removerProduto,
         alterarQuantidade,
         limparCarrinho,
+        totalItens,
       }}
     >
       {children}
     </CarrinhoContexto.Provider>
   );
+};
+
+
+export const useCarrinho = () => {
+  const context = useContext(CarrinhoContexto);
+  if (!context) {
+    throw new Error("useCarrinho deve ser usado dentro de um CarrinhoProvider");
+  }
+  return context;
 };
