@@ -40,7 +40,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, total }) {
       (rua.trim() === "" || numero.trim() === "" || bairro.trim() === ""));
 
   const enviarWhatsApp = () => {
-    const numeroLoja = "5535997554926";
+    const numeroLoja = "5535998696287";
     const listaItens = cartItems
       .map(
         (item) =>
@@ -56,35 +56,35 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, total }) {
 
     const mensagem = `
 *Novo Pedido!*
-👤 Nome: ${nome}
-📍 Tipo: ${entrega === "entrega" ? "Entrega" : "Retirada"}
-🏠 Endereço: ${
+ Nome: ${nome}
+ Tipo: ${entrega === "entrega" ? "Entrega" : "Retirada"}
+ Endereço: ${
       entrega === "entrega"
         ? `${rua}, ${numero} - ${bairro}`
         : "Retirada no local"
     }
-💰 Pagamento: ${pagamento}${
+ Pagamento: ${pagamento}${
       pagamento === "dinheiro" ? ` (Troco: R$ ${troco})` : ""
     }
 
-🛒 *Itens:*
+ *Itens:*
 ${listaItens}
 
-💸 Subtotal: ${subtotal.toLocaleString("pt-BR", {
+ Subtotal: ${subtotal.toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL",
     })}
-🚚 Taxa de entrega: R$ 5,00
-🎟️ Desconto: ${desconto.toLocaleString("pt-BR", {
+ Taxa de entrega: R$ 5,00
+ Desconto: ${desconto.toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL",
     })}
-💵 Total: ${totalFinal.toLocaleString("pt-BR", {
+ Total: ${totalFinal.toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL",
     })}
 
-📝 Observação: ${observacao || "-"}
+ Observação: ${observacao || "-"}
     `;
     const url = `https://wa.me/${numeroLoja}?text=${encodeURIComponent(
       mensagem
