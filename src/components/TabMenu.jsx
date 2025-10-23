@@ -57,7 +57,6 @@ const DescricaoProduto = ({ texto }) => {
   );
 };
 
-
 const menuItems = [
   {
     id: 1,
@@ -65,7 +64,8 @@ const menuItems = [
     name: "Bolo de Chocolate",
     price: 25,
     description: "Bolo fofinho de chocolate com cobertura cremosa",
-    image: "https://img.freepik.com/fotos-gratis/bolo-de-chocolate-com-recheio-e-cobertura-de-chocolate_140725-7285.jpg",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1YcR6sKgbgNXNv-TFI84zeSpIrTMTltrEPA&s",
   },
   {
     id: 2,
@@ -73,17 +73,40 @@ const menuItems = [
     name: "Bolo de Cenoura",
     price: 22,
     description: "Clássico bolo de cenoura com cobertura de chocolate",
-    image: "https://img.freepik.com/fotos-gratis/bolo-de-cenoura-coberto-com-chocolate-visto-de-cima_140725-6812.jpg",
+    image:
+      "https://receitatodahora.com.br/wp-content/uploads/2024/08/bolo-de-cenoura-3007.jpg",
   },
   {
     id: 3,
     category: "Doces",
     name: "Brigadeiro",
     price: 3,
-    description: "Brigadeiro artesanal cremoso com chocolate nobre",
-    image: "https://tudodelicious.com/wp-content/uploads/2025/03/Brigadeiro-Gourmet-de-Cafe-1024x1024.jpeg",
+    description:
+      "Nosso brigadeiro é feito artesanalmente com chocolate nobre e leite condensado de alta qualidade, preparado em fogo lento até atingir o ponto perfeito de cremosidade. Cada unidade é enrolada à mão e coberta com granulados belgas, garantindo sabor intenso e textura irresistível.",
+    image:
+      "https://tudodelicious.com/wp-content/uploads/2025/03/Brigadeiro-Gourmet-de-Cafe-1024x1024.jpeg",
   },
-  // outros itens...
+
+  {
+    id: 4,
+    category: "Biscoitos",
+    name: "Biscoito Doce",
+    price: 7,
+    description:
+      "Biscoitos doces artesanais, crocantes por fora e levemente macios por dentro. Feitos com ingredientes selecionados e um toque de baunilha, lembram o sabor das receitas caseiras de infância. Perfeitos para acompanhar um café fresquinho ou presentear quem você ama.",
+    image:
+      "https://guiadacozinha.com.br/wp-content/uploads/2018/05/Biscoito-recheado-com-doce-de-leite.webp",
+  },
+  
+  {
+  id: 5,
+  category: "Chocolates",
+  name: "Árvore Encantada",
+  price: 3,
+  description: "Delicioso chocolate artesanal em formato de árvore, com recheio cremoso de brigadeiro ou doce de leite. Cada unidade é feita com chocolate de alta qualidade, garantindo sabor intenso e textura irresistível. Ideal para presentear ou se deliciar a qualquer momento do dia.",
+  image: "https://34568.cdn.simplo7.net/static/34568/sku/formas-formas-e-moldes-para-chocolate-forma-chocolate-pirulito-pinheirinho-pinheiro-arvore-natal-especial-nro-86-com-2-cavidades--p-1644072589516.png",
+}
+
 ];
 
 export const TabMenu = () => {
@@ -105,7 +128,6 @@ export const TabMenu = () => {
 
   return (
     <div className="w-full pt-4 pb-24 mb-5">
-     
       <nav className="w-full py-3">
         <ul className="flex gap-3 overflow-x-auto px-2 no-scrollbar">
           {tabs.map((tab, idx) => {
@@ -135,7 +157,6 @@ export const TabMenu = () => {
         </ul>
       </nav>
 
-     
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {itensFiltrados.length > 0 ? (
           itensFiltrados.map((item) => (
@@ -160,14 +181,23 @@ export const TabMenu = () => {
               </div>
 
               <div className="p-5 flex flex-col flex-1 justify-between">
-                <h3 className="font-bold text-lg mb-1" style={{ color: DARK_BROWN }}>
+                <h3
+                  className="font-bold text-lg mb-1"
+                  style={{ color: DARK_BROWN }}
+                >
                   {item.name}
                 </h3>
 
                 <DescricaoProduto texto={item.description} />
 
-                <p className="text-base font-semibold mb-4" style={{ color: DARK_BROWN }}>
-                  {item.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                <p
+                  className="text-base font-semibold mb-4"
+                  style={{ color: DARK_BROWN }}
+                >
+                  {item.price.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
                 </p>
 
                 <div className="flex items-center gap-3 mt-auto">
