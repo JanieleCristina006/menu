@@ -16,7 +16,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, total }) {
   const [isCupomValido, setIsCupomValido] = useState(true);
 
   const subtotal = total || 0;
-  const taxaEntrega = entrega === "entrega" ? 5 : 0; // taxa fixa
+  const taxaEntrega = entrega === "entrega" ? 5 : 0;
   const totalFinal = subtotal + taxaEntrega - desconto;
 
   useEffect(() => {
@@ -101,7 +101,7 @@ ${listaItens}
     >
       <div
         className="bg-white rounded-xl w-full max-w-xl p-6 shadow-lg relative overflow-y-auto"
-        style={{ maxHeight: "calc(100vh - 6rem)" }}
+        style={{ maxHeight: "calc(100vh - 12rem)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <button

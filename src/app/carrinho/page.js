@@ -28,7 +28,7 @@ const Carrinhopage = () => {
         <p className="text-gray-500">Seu carrinho está vazio.</p>
       ) : (
         <>
-          {/* Área que faz scroll se muitos itens */}
+         
           <div className="flex-1 overflow-y-auto max-h-[320px]">
             <ul className="divide-y divide-gray-200">
               {itensCarrinho.map((item) => (
@@ -86,7 +86,7 @@ const Carrinhopage = () => {
             </ul>
           </div>
 
-          {/* Rodapé fixo para total e botão */}
+        
           <div className="pt-4 mt-6">
             <div className="flex justify-between items-center font-bold text-xl text-pink-700 mb-4">
               <span>Total:</span>

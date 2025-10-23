@@ -26,7 +26,7 @@ const tabs = [
   { label: "Biscoitos", icon: Cookie },
   { label: "Chocolates", icon: Chocolate },
   { label: "Sorvetes", icon: IceCream },
-  { label: "Bebidas Quentes", icon: Coffee },
+  { label: "Bebidas", icon: Coffee },
   { label: "Chás", icon: Tea },
   { label: "Salgados", icon: Sandwich },
   { label: "Outros", icon: Candy },
