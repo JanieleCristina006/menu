@@ -49,7 +49,7 @@ const Carrinhopage = () => {
                     <div className="flex items-center gap-2 mt-2">
                       <button
                         onClick={() => alterarQuantidade(item.id, -1)}
-                        className="p-1 rounded bg-pink-100 hover:bg-pink-200"
+                        className="p-1 rounded cursor-pointer bg-pink-100 hover:bg-pink-200"
                         aria-label={`Diminuir quantidade de ${item.nome}`}
                       >
                         <Minus size={16} color="#db2777" />
@@ -59,7 +59,7 @@ const Carrinhopage = () => {
                       </span>
                       <button
                         onClick={() => alterarQuantidade(item.id, 1)}
-                        className="p-1 rounded bg-pink-100 hover:bg-pink-200"
+                        className="p-1 rounded cursor-pointer bg-pink-100 hover:bg-pink-200"
                         aria-label={`Aumentar quantidade de ${item.nome}`}
                       >
                         <Plus size={16} color="#db2777" />
@@ -69,7 +69,7 @@ const Carrinhopage = () => {
                   <div className="flex flex-col items-end">
                     <button
                       onClick={() => removerProduto(item.id)}
-                      className="text-red-500 hover:text-red-700 mb-2"
+                      className="text-red-500 cursor-pointer hover:text-red-700 mb-2"
                       aria-label={`Remover ${item.nome} do carrinho`}
                     >
                       <Trash2 size={20} />
@@ -98,7 +98,7 @@ const Carrinhopage = () => {
               </span>
             </div>
             <button
-              className="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold transition"
+              className="w-full bg-pink-600 cursor-pointer hover:bg-pink-700 text-white py-3 rounded-lg font-semibold transition"
               onClick={() => setIsModalOpen(true)}
             >
               Finalizar Compra

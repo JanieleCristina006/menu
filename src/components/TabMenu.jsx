@@ -48,7 +48,7 @@ const DescricaoProduto = ({ texto }) => {
       {texto.length > limite && (
         <button
           onClick={() => setExpandido(!expandido)}
-          className="text-pink-600 font-semibold text-sm hover:underline mb-2 transition"
+          className="text-pink-600 cursor-pointer font-semibold text-sm hover:underline mb-2 transition"
         >
           {expandido ? "Ver menos" : "Ver mais"}
         </button>
@@ -135,7 +135,7 @@ export const TabMenu = () => {
             return (
               <li key={tab.label} className="">
                 <button
-                  className={`flex items-center gap-2 px-5 py-2 rounded-full transition font-medium text-base border-2 cursor-pointer shadow`}
+                  className={`flex items-center  gap-2 px-5 py-2 rounded-full transition font-medium text-base border-2 cursor-pointer shadow`}
                   style={{
                     background: active === idx ? PINK : "#fff",
                     color: active === idx ? "#fff" : DARK_BROWN,
@@ -203,7 +203,7 @@ export const TabMenu = () => {
                 <div className="flex items-center gap-3 mt-auto">
                   <button
                     onClick={() => handleQuantityChange(item.id, -1)}
-                    className="w-8 h-8 rounded-full border border-pink-300 bg-white font-bold text-pink-600 text-xl flex items-center justify-center hover:bg-pink-100 transition"
+                    className="w-8 h-8 cursor-pointer rounded-full border border-pink-300 bg-white font-bold text-pink-600 text-xl flex items-center justify-center hover:bg-pink-100 transition"
                   >
                     −
                   </button>
@@ -212,7 +212,7 @@ export const TabMenu = () => {
                   </span>
                   <button
                     onClick={() => handleQuantityChange(item.id, 1)}
-                    className="w-8 h-8 rounded-full border border-pink-300 bg-white font-bold text-pink-600 text-xl flex items-center justify-center hover:bg-pink-100 transition"
+                    className="w-8 h-8 cursor-pointer rounded-full border border-pink-300 bg-white font-bold text-pink-600 text-xl flex items-center justify-center hover:bg-pink-100 transition"
                   >
                     +
                   </button>
@@ -226,7 +226,7 @@ export const TabMenu = () => {
                         imagem: item.image,
                       })
                     }
-                    className="flex items-center gap-2 bg-pink-400 text-white px-4 py-2 rounded-full font-semibold shadow hover:bg-pink-500 transition ml-auto"
+                    className="flex items-center cursor-pointer gap-2 bg-pink-400 text-white px-4 py-2 rounded-full font-semibold shadow hover:bg-pink-500 transition ml-auto"
                   >
                     <ShoppingCart size={18} />
                     Adicionar

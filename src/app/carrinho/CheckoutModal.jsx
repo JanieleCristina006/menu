@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 export default function CheckoutModal({ isOpen, onClose, cartItems, total }) {
   const [nome, setNome] = useState("");
   const [rua, setRua] = useState("");
-  const [numero, setNumero] = useState("");
   const [bairro, setBairro] = useState("");
+  const [cidade, setCidade] = useState("Carmo do Rio Claro");
+  const [numero, setNumero] = useState("");
   const [entrega, setEntrega] = useState("entrega");
   const [pagamento, setPagamento] = useState("dinheiro");
   const [troco, setTroco] = useState("");
@@ -14,11 +15,17 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, total }) {
   const [cupom, setCupom] = useState("");
   const [desconto, setDesconto] = useState(0);
   const [isCupomValido, setIsCupomValido] = useState(true);
+  const [ruaInput, setRuaInput] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+
+  const suggestionsRef = useRef(null);
+  const API_KEY = "cd74557c52e94230a23495e017f880f2";
 
   const subtotal = total || 0;
   const taxaEntrega = entrega === "entrega" ? 5 : 0;
   const totalFinal = subtotal + taxaEntrega - desconto;
 
+  // Validação do cupom
   useEffect(() => {
     if (cupom.toUpperCase() === "DESCONTO5") {
       setDesconto(5);
@@ -32,63 +39,80 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, total }) {
     }
   }, [cupom]);
 
+  // Autocomplete de endereço
+  useEffect(() => {
+    if (ruaInput.trim().length < 3) {
+      setSuggestions([]);
+      return;
+    }
+    const fetchSuggestions = async () => {
+      try {
+        const fullInput = `${ruaInput} Carmo do Rio Claro`;
+        const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(fullInput)}&lang=pt&limit=5&apiKey=${API_KEY}`;
+        const res = await fetch(url);
+        if (!res.ok) {
+          const errMsg = await res.text();
+          console.error("Geoapify ERRO:", res.status, errMsg);
+          setSuggestions([]);
+          return;
+        }
+        const data = await res.json();
+        setSuggestions(data.features || []);
+      } catch (error) {
+        console.error("Erro ao buscar sugestões:", error);
+        setSuggestions([]);
+      }
+    };
+    fetchSuggestions();
+  }, [ruaInput]);
+
+  // Fechar sugestões ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target)) {
+        setSuggestions([]);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   if (!isOpen) return null;
 
   const isFinalizarDisabled =
     nome.trim() === "" ||
-    (entrega === "entrega" &&
-      (rua.trim() === "" || numero.trim() === "" || bairro.trim() === ""));
+    (entrega === "entrega" && (rua.trim() === "" || numero.trim() === "" || bairro.trim() === ""));
 
   const enviarWhatsApp = () => {
     const numeroLoja = "5535998696287";
     const listaItens = cartItems
-      .map(
-        (item) =>
-          `• ${item.nome} (x${item.quantidade}) - ${item.preco.toLocaleString(
-            "pt-BR",
-            {
-              style: "currency",
-              currency: "BRL",
-            }
-          )}`
-      )
+      .map((item) => `• ${item.nome} (x${item.quantidade}) - ${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`)
       .join("\n");
+
+    // Criar link do Google Maps com o endereço completo
+    const enderecoCompleto = `${rua}, ${numero} - ${bairro}, ${cidade}`;
+    const enderecoMaps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(enderecoCompleto)}`;
 
     const mensagem = `
 *Novo Pedido!*
- Nome: ${nome}
- Tipo: ${entrega === "entrega" ? "Entrega" : "Retirada"}
- Endereço: ${
-      entrega === "entrega"
-        ? `${rua}, ${numero} - ${bairro}`
-        : "Retirada no local"
-    }
- Pagamento: ${pagamento}${
-      pagamento === "dinheiro" ? ` (Troco: R$ ${troco})` : ""
-    }
+Nome: ${nome}
+Tipo: ${entrega === "entrega" ? "Entrega" : "Retirada"}
+Endereço: ${entrega === "entrega" ? `${enderecoCompleto}\n📍 ${enderecoMaps}` : "Retirada no local"}
+Pagamento: ${pagamento}${pagamento === "dinheiro" ? ` (Troco: R$ ${troco})` : ""}
 
- *Itens:*
+*Itens:*
 ${listaItens}
 
- Subtotal: ${subtotal.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    })}
- Taxa de entrega: R$ 5,00
- Desconto: ${desconto.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    })}
- Total: ${totalFinal.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    })}
+Subtotal: ${subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+Taxa de entrega: R$ 5,00
+Desconto: ${desconto.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+Total: ${totalFinal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
 
- Observação: ${observacao || "-"}
+Observação: ${observacao || "-"}
     `;
-    const url = `https://wa.me/${numeroLoja}?text=${encodeURIComponent(
-      mensagem
-    )}`;
+    const url = `https://wa.me/${numeroLoja}?text=${encodeURIComponent(mensagem)}`;
     window.open(url, "_blank");
   };
 
@@ -107,7 +131,7 @@ ${listaItens}
         <button
           onClick={onClose}
           aria-label="Fechar modal"
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition text-2xl font-bold"
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold"
         >
           &times;
         </button>
@@ -116,6 +140,7 @@ ${listaItens}
           Finalizar Pedido
         </h2>
 
+        {/* Nome */}
         <div className="mb-4">
           <label className="block font-semibold mb-1">Nome:</label>
           <input
@@ -127,18 +152,46 @@ ${listaItens}
           />
         </div>
 
+        {/* Endereço com autocomplete */}
+        {entrega === "entrega" && (
+          <div className="mb-4 relative" ref={suggestionsRef}>
+            <label className="block font-semibold mb-1">Endereço:</label>
+            <input
+              type="text"
+              value={ruaInput}
+              onChange={(e) => {
+                setRuaInput(e.target.value);
+                setRua("");
+              }}
+              placeholder="Digite a rua"
+              className="w-full border rounded px-3 py-2 focus:outline-pink-400 focus:ring-2 focus:ring-pink-300"
+            />
+            {suggestions.length > 0 && (
+              <ul className="absolute z-50 w-full bg-white border rounded mt-1 max-h-40 overflow-auto shadow-lg">
+                {suggestions.map((item, index) => (
+                  <li
+                    key={index}
+                    className="px-3 py-2 hover:bg-pink-100 cursor-pointer"
+                    onClick={() => {
+                      setRua(item.properties.street || item.properties.formatted || "");
+                      setRuaInput(item.properties.formatted || "");
+                      setNumero(item.properties.housenumber || "");
+                      setBairro(item.properties.suburb || "");
+                      setCidade(item.properties.city || "Carmo do Rio Claro");
+                      setSuggestions([]);
+                    }}
+                  >
+                    {item.properties.formatted}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
+        {/* Número e Bairro */}
         {entrega === "entrega" && (
           <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="col-span-2">
-              <label className="block font-semibold mb-1">Rua:</label>
-              <input
-                type="text"
-                value={rua}
-                onChange={(e) => setRua(e.target.value)}
-                placeholder="Digite a rua"
-                className="w-full border rounded px-3 py-2 focus:outline-pink-400 focus:ring-2 focus:ring-pink-300"
-              />
-            </div>
             <div>
               <label className="block font-semibold mb-1">Número:</label>
               <input
@@ -159,9 +212,19 @@ ${listaItens}
                 className="w-full border rounded px-3 py-2 focus:outline-pink-400 focus:ring-2 focus:ring-pink-300"
               />
             </div>
+            <div>
+              <label className="block font-semibold mb-1">Cidade:</label>
+              <input
+                type="text"
+                value={cidade}
+                readOnly
+                className="w-full border rounded px-3 py-2 bg-gray-100 cursor-not-allowed"
+              />
+            </div>
           </div>
         )}
 
+        {/* Retirada/Entrega */}
         <div className="mb-4">
           <span className="block font-semibold mb-1">Retirada / Entrega:</span>
           <div className="flex gap-6">
@@ -190,10 +253,9 @@ ${listaItens}
           </div>
         </div>
 
+        {/* Pagamento */}
         <div className="mb-4">
-          <label className="block font-semibold mb-1">
-            Forma de Pagamento:
-          </label>
+          <label className="block font-semibold mb-1">Forma de Pagamento:</label>
           <select
             value={pagamento}
             onChange={(e) => setPagamento(e.target.value)}
@@ -207,9 +269,7 @@ ${listaItens}
 
         {pagamento === "dinheiro" && (
           <div className="mb-4">
-            <label className="block font-semibold mb-1">
-              Troco para quanto?
-            </label>
+            <label className="block font-semibold mb-1">Troco para quanto?</label>
             <input
               type="number"
               min="0"
@@ -221,6 +281,7 @@ ${listaItens}
           </div>
         )}
 
+        {/* Observação */}
         <div className="mb-4">
           <label className="block font-semibold mb-1">Observação:</label>
           <textarea
@@ -232,6 +293,7 @@ ${listaItens}
           />
         </div>
 
+        {/* Cupom */}
         <div className="mb-4">
           <label className="block font-semibold mb-1">Cupom de Desconto:</label>
           <input
@@ -250,15 +312,11 @@ ${listaItens}
           )}
         </div>
 
+        {/* Resumo */}
         <div className="border-t pt-4 mt-4 space-y-2">
           <div className="flex justify-between text-gray-700">
             <span>Subtotal:</span>
-            <span>
-              {subtotal.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-            </span>
+            <span>{subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
           </div>
           <div className="flex justify-between text-gray-700">
             <span>Taxa de entrega:</span>
@@ -266,25 +324,15 @@ ${listaItens}
           </div>
           <div className="flex justify-between text-gray-700">
             <span>Desconto:</span>
-            <span>
-              -{" "}
-              {desconto.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-            </span>
+            <span>- {desconto.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
           </div>
           <div className="flex justify-between font-bold text-lg text-pink-700">
             <span>Total:</span>
-            <span>
-              {totalFinal.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-            </span>
+            <span>{totalFinal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
           </div>
         </div>
 
+        {/* Botões */}
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center pb-4">
           <button
             onClick={onClose}
@@ -295,7 +343,7 @@ ${listaItens}
           <button
             onClick={enviarWhatsApp}
             disabled={isFinalizarDisabled}
-            className={`w-full sm:w-auto px-6 py-2 rounded-full font-semibold transition text-white ${
+            className={`w-full sm:w-auto px-6 py-2 rounded-full font-semibold text-white transition ${
               isFinalizarDisabled
                 ? "bg-pink-300 cursor-not-allowed"
                 : "bg-pink-500 hover:bg-pink-600"

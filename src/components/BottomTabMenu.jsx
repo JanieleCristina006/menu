@@ -34,7 +34,7 @@ export const BottomTabMenu = () => {
             <li key={tab.label} className="relative">
               <button
                 onClick={() => handleTabClick(idx, tab.path)}
-                className={`flex flex-col items-center justify-center px-5 py-2 rounded-full transition-all duration-200 ${
+                className={`flex flex-col cursor-pointer items-center justify-center px-5 py-2 rounded-full transition-all duration-200 ${
                   isActive
                     ? "bg-pink-200 text-pink-600 shadow-md"
                     : "text-brown-500 hover:bg-pink-50"
