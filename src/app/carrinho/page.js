@@ -29,7 +29,7 @@ const Carrinhopage = () => {
       ) : (
         <>
          
-          <div className="flex-1 overflow-y-auto max-h-[320px]">
+          <div className="flex-1 overflow-y-auto max-h-80">
             <ul className="divide-y divide-gray-200">
               {itensCarrinho.map((item) => (
                 <li key={item.id} className="flex items-center py-4">

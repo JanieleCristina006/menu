@@ -1,17 +1,7 @@
 "use client";
 
-import React, { useState, useContext } from "react";
-import {
-  Cake,
-  Coffee,
-  Candy,
-  Sandwich,
-  Cookie,
-  IceCream,
-  Chocolate,
-  Tea,
-  ShoppingCart,
-} from "lucide-react";
+import React, { useState, useContext, useEffect } from "react";
+import { Candy, Coffee, Sandwich, Shapes, ShoppingCart } from "lucide-react";
 
 import { CarrinhoContexto } from "../context/CartContext";
 
@@ -20,122 +10,83 @@ const DARK_BROWN = "#813717";
 const LIGHT_BROWN = "#A47149";
 const CARD_BG = "#FFF1F5";
 
-const tabs = [
-  { label: "Doces", icon: Candy },
-  { label: "Bolos", icon: Cake },
-  { label: "Biscoitos", icon: Cookie },
-  { label: "Chocolates", icon: Chocolate },
-  { label: "Sorvetes", icon: IceCream },
-  { label: "Bebidas", icon: Coffee },
-  { label: "Chás", icon: Tea },
-  { label: "Salgados", icon: Sandwich },
-  { label: "Outros", icon: Candy },
-];
+const IconesCategorias = {
+  doces: Candy,
+  salgados: Sandwich,
+  bebidas: Coffee,
+  outros: Shapes,
+};
 
-const DescricaoProduto = ({ texto }) => {
+function DescricaoProduto({ texto }) {
   const [expandido, setExpandido] = useState(false);
   const limite = 70;
 
-  const textoExibido = expandido
-    ? texto
-    : texto.slice(0, limite) + (texto.length > limite ? "..." : "");
+  const textoExibido =
+    expandido || texto.length <= limite
+      ? texto
+      : texto.slice(0, limite) + "...";
 
   return (
     <div>
       <p className="text-[15px] mb-2" style={{ color: LIGHT_BROWN }}>
         {textoExibido}
       </p>
+
       {texto.length > limite && (
         <button
           onClick={() => setExpandido(!expandido)}
-          className="text-pink-600 cursor-pointer font-semibold text-sm hover:underline mb-2 transition"
+          className="text-pink-600 cursor-pointer font-semibold text-sm hover:underline transition"
         >
           {expandido ? "Ver menos" : "Ver mais"}
         </button>
       )}
     </div>
   );
-};
-
-const menuItems = [
-  {
-    id: 1,
-    category: "Bolos",
-    name: "Bolo de Chocolate",
-    price: 25,
-    description: "Bolo fofinho de chocolate com cobertura cremosa",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1YcR6sKgbgNXNv-TFI84zeSpIrTMTltrEPA&s",
-  },
-  {
-    id: 2,
-    category: "Bolos",
-    name: "Bolo de Cenoura",
-    price: 22,
-    description: "Clássico bolo de cenoura com cobertura de chocolate",
-    image:
-      "https://receitatodahora.com.br/wp-content/uploads/2024/08/bolo-de-cenoura-3007.jpg",
-  },
-  {
-    id: 3,
-    category: "Doces",
-    name: "Brigadeiro",
-    price: 3,
-    description:
-      "Nosso brigadeiro é feito artesanalmente com chocolate nobre e leite condensado de alta qualidade, preparado em fogo lento até atingir o ponto perfeito de cremosidade. Cada unidade é enrolada à mão e coberta com granulados belgas, garantindo sabor intenso e textura irresistível.",
-    image:
-      "https://tudodelicious.com/wp-content/uploads/2025/03/Brigadeiro-Gourmet-de-Cafe-1024x1024.jpeg",
-  },
-
-  {
-    id: 4,
-    category: "Biscoitos",
-    name: "Biscoito Doce",
-    price: 7,
-    description:
-      "Biscoitos doces artesanais, crocantes por fora e levemente macios por dentro. Feitos com ingredientes selecionados e um toque de baunilha, lembram o sabor das receitas caseiras de infância. Perfeitos para acompanhar um café fresquinho ou presentear quem você ama.",
-    image:
-      "https://guiadacozinha.com.br/wp-content/uploads/2018/05/Biscoito-recheado-com-doce-de-leite.webp",
-  },
-  
-  {
-  id: 5,
-  category: "Chocolates",
-  name: "Árvore Encantada",
-  price: 3,
-  description: "Delicioso chocolate artesanal em formato de árvore, com recheio cremoso de brigadeiro ou doce de leite. Cada unidade é feita com chocolate de alta qualidade, garantindo sabor intenso e textura irresistível. Ideal para presentear ou se deliciar a qualquer momento do dia.",
-  image: "https://34568.cdn.simplo7.net/static/34568/sku/formas-formas-e-moldes-para-chocolate-forma-chocolate-pirulito-pinheirinho-pinheiro-arvore-natal-especial-nro-86-com-2-cavidades--p-1644072589516.png",
 }
 
-];
-
-export const TabMenu = () => {
+export const TabMenu = ({ produtos, busca }) => {
   const [active, setActive] = useState(0);
   const [quantities, setQuantities] = useState({});
+  const [categorias, setCategorias] = useState([]);
+
   const { adicionarProduto } = useContext(CarrinhoContexto);
 
-  const categoriaAtiva = tabs[active].label;
-  const itensFiltrados = menuItems.filter(
-    (item) => item.category === categoriaAtiva
-  );
+  useEffect(() => {
+    if (produtos.length > 0) {
+      const cats = [...new Set(produtos.map((i) => i.categoria))];
+      setCategorias(cats);
+    }
+  }, [produtos]);
 
-  const handleQuantityChange = (id, delta) => {
+  const categoriaAtiva = categorias[active] || null;
+  const textoBusca = busca?.toLowerCase() || "";
+
+  const itensFiltrados = produtos
+    .filter((item) =>
+      categoriaAtiva ? item.categoria === categoriaAtiva : true
+    )
+    .filter((item) => item.nome.toLowerCase().includes(textoBusca));
+
+  function handleQuantityChange(id, delta) {
     setQuantities((prev) => ({
       ...prev,
       [id]: Math.max(1, (prev[id] || 1) + delta),
     }));
-  };
+  }
 
   return (
     <div className="w-full pt-4 pb-24 mb-5">
       <nav className="w-full py-3">
         <ul className="flex gap-3 overflow-x-auto px-2 no-scrollbar">
-          {tabs.map((tab, idx) => {
-            const Icone = tab.icon;
+          {categorias.map((tab, idx) => {
+            const chave = tab.toLowerCase();
+            const Icone = IconesCategorias[chave] || Candy;
+
             return (
-              <li key={tab.label} className="">
+              <li key={tab}>
                 <button
-                  className={`flex items-center  gap-2 px-5 py-2 rounded-full transition font-medium text-base border-2 cursor-pointer shadow`}
+                  onClick={() => setActive(idx)}
+                  className="flex items-center gap-2 px-5 py-2 rounded-full transition font-medium text-base border-2 shadow cursor-pointer"
                   style={{
                     background: active === idx ? PINK : "#fff",
                     color: active === idx ? "#fff" : DARK_BROWN,
@@ -143,13 +94,12 @@ export const TabMenu = () => {
                     fontWeight: active === idx ? 700 : 500,
                     boxShadow:
                       active === idx
-                        ? `0 4px 16px 0 ${PINK}22`
-                        : `0 1px 4px 0 ${PINK}11`,
+                        ? `0 4px 16px ${PINK}22`
+                        : `0 2px 6px ${PINK}11`,
                   }}
-                  onClick={() => setActive(idx)}
                 >
-                  {Icone && <Icone size={18} />}
-                  {tab.label}
+                  <Icone size={18} />
+                  {tab}
                 </button>
               </li>
             );
@@ -157,16 +107,21 @@ export const TabMenu = () => {
         </ul>
       </nav>
 
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {itensFiltrados.length > 0 ? (
-          itensFiltrados.map((item) => (
+      
+      {itensFiltrados.length === 0 ? (
+        <p className="text-center text-gray-600 text-lg py-10">
+          Nenhum item encontrado 
+        </p>
+      ) : (
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {itensFiltrados.map((item) => (
             <div
               key={item.id}
-              className="rounded-2xl shadow-xl border-2 flex flex-col h-full bg-pink-50 transition hover:-translate-y-1"
+              className="rounded-2xl shadow-xl border-2 flex flex-col h-full transition hover:-translate-y-1"
               style={{
                 borderColor: PINK,
                 background: CARD_BG,
-                boxShadow: `0 6px 20px 0 ${PINK}33`,
+                boxShadow: `0 6px 20px ${PINK}33`,
               }}
             >
               <div
@@ -174,8 +129,8 @@ export const TabMenu = () => {
                 style={{ borderColor: PINK }}
               >
                 <img
-                  src={item.image}
-                  alt={item.name}
+                  src={item.img_url}
+                  alt={item.nome}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -185,16 +140,16 @@ export const TabMenu = () => {
                   className="font-bold text-lg mb-1"
                   style={{ color: DARK_BROWN }}
                 >
-                  {item.name}
+                  {item.nome}
                 </h3>
 
-                <DescricaoProduto texto={item.description} />
+                <DescricaoProduto texto={item.descricao} />
 
                 <p
                   className="text-base font-semibold mb-4"
                   style={{ color: DARK_BROWN }}
                 >
-                  {item.price.toLocaleString("pt-BR", {
+                  {Number(item.preco).toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL",
                   })}
@@ -203,30 +158,33 @@ export const TabMenu = () => {
                 <div className="flex items-center gap-3 mt-auto">
                   <button
                     onClick={() => handleQuantityChange(item.id, -1)}
-                    className="w-8 h-8 cursor-pointer rounded-full border border-pink-300 bg-white font-bold text-pink-600 text-xl flex items-center justify-center hover:bg-pink-100 transition"
+                    className="w-8 h-8 rounded-full border border-pink-300 bg-white font-bold text-pink-600 text-xl flex items-center justify-center hover:bg-pink-100 transition"
                   >
                     −
                   </button>
-                  <span className="font-bold text-lg text-pink-700 px-2 w-8 text-center select-none">
+
+                  <span className="font-bold text-lg text-pink-700 w-8 text-center select-none">
                     {quantities[item.id] || 1}
                   </span>
+
                   <button
                     onClick={() => handleQuantityChange(item.id, 1)}
-                    className="w-8 h-8 cursor-pointer rounded-full border border-pink-300 bg-white font-bold text-pink-600 text-xl flex items-center justify-center hover:bg-pink-100 transition"
+                    className="w-8 h-8 rounded-full border border-pink-300 bg-white font-bold text-pink-600 text-xl flex items-center justify-center hover:bg-pink-100 transition"
                   >
                     +
                   </button>
+
                   <button
                     onClick={() =>
                       adicionarProduto({
                         id: item.id,
-                        nome: item.name,
-                        preco: item.price,
+                        nome: item.nome,
+                        preco: item.preco,
                         quantidade: quantities[item.id] || 1,
-                        imagem: item.image,
+                        imagem: item.img_url,
                       })
                     }
-                    className="flex items-center cursor-pointer gap-2 bg-pink-400 text-white px-4 py-2 rounded-full font-semibold shadow hover:bg-pink-500 transition ml-auto"
+                    className="flex items-center gap-2 bg-pink-400 text-white px-4 py-2 rounded-full font-semibold shadow hover:bg-pink-500 transition ml-auto"
                   >
                     <ShoppingCart size={18} />
                     Adicionar
@@ -234,11 +192,9 @@ export const TabMenu = () => {
                 </div>
               </div>
             </div>
-          ))
-        ) : (
-          <p className="text-gray-400 mx-auto">Nenhum item disponível</p>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
       <style jsx>{`
         .no-scrollbar::-webkit-scrollbar {

@@ -28,7 +28,7 @@ export const Input = (props) => {
         size={22}
       />
 
-      <BottomTabMenu />
+     
     </div>
   );
 };

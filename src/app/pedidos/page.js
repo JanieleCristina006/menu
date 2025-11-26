@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search } from "lucide-react"; // ícone para o campo de busca
+import { Search } from "lucide-react";
 
 const pedidosMock = [
   {
