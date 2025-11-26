@@ -46,7 +46,7 @@ export const Menu = () => {
 
   return (
     <Container>
-      <div className="flex flex-col items-center mb-5">
+      <div className="flex flex-col mt-8 items-center mb-5">
         <h1 className="text-center text-2xl font-semibold mb-5 text-[#795548] drop-shadow-sm">
           Bem vindo(a) ao cardápio online
         </h1>

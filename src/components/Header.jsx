@@ -1,40 +1,80 @@
-import Image from 'next/image';
-import Logo from '../../public/logo.png';
+"use client";
+
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import Logo from "../../public/logo2.png";
 
 export const Header = () => {
+  const [status, setStatus] = useState("");
+  
+  useEffect(() => {
+    const agora = new Date();
+    const hora = agora.getHours();
+    const minuto = agora.getMinutes();
+
+    const abre = 9;
+    const fecha = 19;
+
+    const aberto =
+      (hora > abre && hora < fecha) ||
+      (hora === abre && minuto >= 0) ||
+      (hora === fecha && minuto === 0);
+
+    setStatus(aberto ? "Aberto agora" : "Fechado no momento");
+  }, []);
+
   return (
-    <div className="relative bg-[#f9b8d4] overflow-visible mb-20 flex flex-col items-center justify-center pb-8">
-     
-      <div className="relative w-28 h-28 mt-6 mb-2 z-10">
-        <Image
-          src={Logo}
-          alt="Logo"
-          fill
-          className="object-contain"
-          priority
-        />
+    <header
+      style={{
+        width: "100%",
+        background: "linear-gradient(90deg, #FCE4EC 60%, #FFDDE4 100%)",
+        padding: "18px 0 14px 0",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        borderBottomLeftRadius: "24px",
+        borderBottomRightRadius: "24px",
+        boxShadow: "0 4px 18px rgba(0,0,0,0.12)",
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
+      }}
+    >
+
+      {/* LOGO MAIOR E SEM CÍRCULO */}
+      <Image
+        src={Logo}
+        alt="Logo"
+        width={110}  // aumentei
+        height={110} // aumentei
+        style={{
+          marginBottom: "4px",
+          objectFit: "contain",
+        }}
+      />
+
+      {/* STATUS */}
+      <div
+        style={{
+          marginTop: "4px",
+          fontSize: "0.9rem",
+          color: status === "Aberto agora" ? "#2E7D32" : "#C62828",
+          fontWeight: 600,
+        }}
+      >
+        {status}
       </div>
 
-      <div className="relative z-10 mb-4"></div>
-
-     
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 1440 320"
-        className="absolute top-[190px] left-0 w-full h-16 z-0"
-        preserveAspectRatio="none"
+      {/* HORÁRIO */}
+      <span
+        style={{
+          fontSize: "0.75rem",
+          color: "#8A5A6D",
+          marginTop: "1px",
+        }}
       >
-        <defs>
-          <filter id="waveShadow" x="-50%" y="-50%" width="200%" height="200%">
-            <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="rgba(0,0,0,0.25)" />
-          </filter>
-        </defs>
-        <path
-          fill="#f9b8d4"
-          filter="url(#waveShadow)"
-          d="M0,192L15,202.7C30,213,60,235,90,229.3C120,224,150,192,180,160C210,128,240,96,270,80C300,64,330,64,360,85.3C390,107,420,149,450,176C480,203,510,213,540,229.3C570,245,600,267,630,261.3C660,256,690,224,720,186.7C750,149,780,107,810,96C840,85,870,107,900,106.7C930,107,960,85,990,74.7C1020,64,1050,64,1080,53.3C1110,43,1140,21,1170,42.7C1200,64,1230,128,1260,165.3C1290,203,1320,213,1350,202.7C1380,192,1410,160,1425,144L1440,128L1440,0L0,0Z"
-        />
-      </svg>
-    </div>
+        ⏰ Funcionamento: 09h às 19h
+      </span>
+    </header>
   );
 };
