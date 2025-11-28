@@ -8,7 +8,7 @@ export const Footer = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
       
         <div className="text-center md:text-left">
-          <h2 className="text-2xl font-bold">Doceria Delícia</h2>
+          <h2 className="text-2xl font-bold">Aninha Confeiteira</h2>
           <p className="text-sm mt-1">O melhor sabor em cada pedaço!</p>
         </div>
 
@@ -26,7 +26,7 @@ export const Footer = () => {
       </div>
 
       <div className="mt-6 text-center text-sm text-[#F9B8D4]/80">
-        &copy; {new Date().getFullYear()} Doceria Delícia. Todos os direitos reservados.
+        &copy; {new Date().getFullYear()} Aninha Confeiteira. Todos os direitos reservados.
       </div>
     </footer>
   );

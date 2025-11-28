@@ -107,7 +107,6 @@ export const TabMenu = ({ produtos, busca }) => {
         </ul>
       </nav>
 
-      
       {itensFiltrados.length === 0 ? (
         <p className="text-center text-gray-600 text-lg py-10">
           Nenhum item encontrado 

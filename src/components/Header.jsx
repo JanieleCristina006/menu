@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import Logo from "../../public/logo2.png";
+import Logo from "../../public/logo4.png";
 
 export const Header = () => {
   const [status, setStatus] = useState("");
-  
+
   useEffect(() => {
     const agora = new Date();
     const hora = agora.getHours();
@@ -24,55 +24,45 @@ export const Header = () => {
   }, []);
 
   return (
-    <header
-      style={{
-        width: "100%",
-        background: "linear-gradient(90deg, #FCE4EC 60%, #FFDDE4 100%)",
-        padding: "18px 0 14px 0",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        borderBottomLeftRadius: "24px",
-        borderBottomRightRadius: "24px",
-        boxShadow: "0 4px 18px rgba(0,0,0,0.12)",
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-      }}
-    >
-
-      {/* LOGO MAIOR E SEM CÍRCULO */}
-      <Image
-        src={Logo}
-        alt="Logo"
-        width={110}  // aumentei
-        height={110} // aumentei
-        style={{
-          marginBottom: "4px",
-          objectFit: "contain",
-        }}
-      />
-
-      {/* STATUS */}
-      <div
-        style={{
-          marginTop: "4px",
-          fontSize: "0.9rem",
-          color: status === "Aberto agora" ? "#2E7D32" : "#C62828",
-          fontWeight: 600,
-        }}
-      >
-        {status}
+    <header className="
+      w-full
+      sticky top-0 z-[100]
+      flex flex-col items-center
+      pt-4 pb-3
+      rounded-b-[24px]
+      shadow-[0_4px_18px_rgba(0,0,0,0.12)]
+      bg-gradient-to-r from-[#FCE4EC] to-[#FFDDE4]
+    ">
+      {/* LOGO */}
+      <div className="flex items-center justify-center">
+        <Image
+          src={Logo}
+          alt="Logo"
+          width={120}
+          height={120}
+          className="
+            object-contain
+            w-20 h-20
+            sm:w-24 sm:h-24
+            md:w-28 md:h-28
+            lg:w-32 lg:h-32
+          "
+        />
       </div>
 
-      {/* HORÁRIO */}
-      <span
-        style={{
-          fontSize: "0.75rem",
-          color: "#8A5A6D",
-          marginTop: "1px",
-        }}
-      >
+      {/* STATUS TAB COMPACTA */}
+      <div className="mt-2">
+        <div className={`
+          px-3 py-0.5 rounded-full font-semibold text-xs
+          sm:text-sm
+          border
+          ${status === "Aberto agora" ? "bg-green-100 text-green-700 border-green-700" : "bg-red-100 text-red-700 border-red-700"}
+        `}>
+          {status}
+        </div>
+      </div>
+
+      <span className="text-[0.65rem] sm:text-[0.7rem] text-[#8A5A6D] mt-1">
         ⏰ Funcionamento: 09h às 19h
       </span>
     </header>
