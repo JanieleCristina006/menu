@@ -5,6 +5,7 @@ import { Container } from "./Container";
 import { Input } from "./Input";
 import { TabMenu } from "./TabMenu";
 import LoadingSpinner from "./Loading";
+import { produtosMock } from "@/mocks/produtosMock";
 
 export const Menu = () => {
   const [busca, setBusca] = useState("");
@@ -17,13 +18,25 @@ export const Menu = () => {
       try {
         setLoading(true);
 
-        const resp = await fetch("https://ecommerce-api-4k6g.onrender.com/produtos/");
+        const resp = await fetch(
+          "https://ecommerce-api-4k6g.onrender.com/produtos/",
+          { cache: "no-store" }
+        );
+
+        if (!resp.ok) {
+          throw new Error("API não respondeu");
+        }
+
         const data = await resp.json();
 
+        if (!Array.isArray(data) || data.length === 0) {
+          throw new Error("API vazia");
+        }
+
         setProdutos(data);
-        setFiltrados(data);
       } catch (err) {
-        console.error("Erro ao buscar produtos:", err);
+        console.warn("Usando produtos mock:", err.message);
+        setProdutos(produtosMock);
       } finally {
         setLoading(false);
       }
@@ -35,12 +48,12 @@ export const Menu = () => {
   useEffect(() => {
     const texto = busca.toLowerCase();
 
-    const resultado = produtos.filter((item) =>
-      item.nome.toLowerCase().includes(texto) ||
-      item.categoria.toLowerCase().includes(texto)
+    const resultado = produtos.filter(
+      (item) =>
+        item.nome.toLowerCase().includes(texto) ||
+        item.categoria.toLowerCase().includes(texto)
     );
 
-    console.log("Resultado filtrado:", resultado);
     setFiltrados(resultado);
   }, [busca, produtos]);
 
@@ -63,7 +76,6 @@ export const Menu = () => {
           <LoadingSpinner />
         </div>
       ) : (
-        // 👇 AGORA PASSA A BUSCA
         <TabMenu produtos={filtrados} busca={busca} />
       )}
     </Container>
