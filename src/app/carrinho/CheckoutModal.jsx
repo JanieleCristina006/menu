@@ -207,7 +207,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems = [], total =
       return;
     }
 
-    const numeroLoja = "749905-4403";
+    const numeroLoja = "7499054403";
     const mensagem = montarMensagemElegante();
 
     const endpoint = `https://api.whatsapp.com/send?phone=${numeroLoja}&text=${encodeURIComponent(mensagem)}`;
