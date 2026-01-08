@@ -12,8 +12,8 @@ export const Header = () => {
     const hora = agora.getHours();
     const minuto = agora.getMinutes();
 
-    const abre = 9;
-    const fecha = 19;
+    const abre = 8;
+    const fecha = 20;
 
     const aberto =
       (hora > abre && hora < fecha) ||
@@ -63,7 +63,7 @@ export const Header = () => {
       </div>
 
       <span className="text-[0.65rem] sm:text-[0.7rem] text-[#8A5A6D] mt-1">
-        ⏰ Funcionamento: 09h às 19h
+        ⏰ Funcionamento: 08h às 20h
       </span>
     </header>
   );

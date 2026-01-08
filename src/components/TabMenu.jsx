@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useContext, useEffect } from "react";
-import { Candy, Coffee, Sandwich, Shapes, ShoppingCart } from "lucide-react";
+import { Candy, Coffee, Sandwich, Shapes, ShoppingCart,Utensils } from "lucide-react";
 
 import { CarrinhoContexto } from "../context/CartContext";
 
@@ -11,7 +11,7 @@ const LIGHT_BROWN = "#A47149";
 const CARD_BG = "#FFF1F5";
 
 const IconesCategorias = {
-  doces: Candy,
+  pratos: Utensils,
   salgados: Sandwich,
   bebidas: Coffee,
   outros: Shapes,
